@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 import { getLocale, isLocale, localeCodes, locales } from "../i18n/config";
 import { fontClassName } from "../i18n/fonts";
-import { getDictionary } from "../i18n/dictionaries";
 import "../globals.css";
 
 export function generateStaticParams() {
@@ -17,7 +16,7 @@ const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
   (process.env.VERCEL_PROJECT_PRODUCTION_URL
     ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : "https://anatomy-atelier.openai.site");
+    : "https://formspace.openai.site");
 
 export async function generateMetadata({
   params,
@@ -27,14 +26,15 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const config = getLocale(locale);
-  const { ui } = await getDictionary(locale);
-  const image = { url: "/og.jpg", width: 1200, height: 675, alt: ui.meta.imageAlt };
+  const title = "Formspace — 3D design file viewer";
+  const description = "Open and inspect 3DM, STL, OBJ, GLB, and GLTF design files directly in your browser.";
+  const image = { url: "/og.jpg", width: 1200, height: 675, alt: "Formspace 3D design viewer" };
 
   return {
     metadataBase: new URL(siteUrl),
-    title: ui.meta.title,
-    description: ui.meta.description,
-    applicationName: "Anatomy Atelier",
+    title,
+    description,
+    applicationName: "Formspace 3D Viewer",
     alternates: {
       canonical: `/${locale}`,
       // Lets search engines serve the right language and offer the rest.
@@ -54,17 +54,17 @@ export async function generateMetadata({
     },
     openGraph: {
       type: "website",
-      siteName: "Anatomy Atelier",
+      siteName: "Formspace",
       locale: config.intl,
       alternateLocale: locales.filter((entry) => entry.code !== locale).map((entry) => entry.intl),
-      title: ui.meta.ogTitle,
-      description: ui.meta.ogDescription,
+      title,
+      description,
       images: [image],
     },
     twitter: {
       card: "summary_large_image",
-      title: ui.meta.ogTitle,
-      description: ui.meta.ogDescription,
+      title,
+      description,
       images: [image],
     },
   };

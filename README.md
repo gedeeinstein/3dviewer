@@ -18,6 +18,37 @@ npm run build
 
 This starter does not use `wrangler.jsonc`.
 
+## Docker Compose
+
+The production viewer can run without a local Node.js installation when Docker
+Engine with the Compose plugin is available.
+
+```bash
+cp .env.example .env
+docker compose up --build -d
+docker compose ps
+```
+
+Open `http://localhost:3000`. The root route redirects to the English viewer at
+`/en`. To follow startup logs or stop the service:
+
+```bash
+docker compose logs -f viewer
+docker compose down
+```
+
+Every setting is optional and documented in `.env.example`. In particular,
+`HOST_PORT` changes the host port, `CONTAINER_PORT` changes the server port in
+the container, `NEXT_PUBLIC_SITE_URL` controls canonical/social URLs, and
+`DOCKER_IMAGE` changes the built image name. When changing `HOST_PORT`, also set
+`NEXT_PUBLIC_SITE_URL` to the public URL users will visit.
+
+The image uses Node.js 22.13, installs from `package-lock.json`, creates the
+Vinext production build in a build stage, runs as the unprivileged `node` user,
+and includes an HTTP health check. No database, Cloudflare credentials, or API
+keys are required for the local-file viewer. Loading `.3dm` files currently
+requires outbound browser access to jsDelivr for the Rhino WebAssembly runtime.
+
 ## Included Shape
 
 - edit site code under `app/`
